@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Spine of the Dragon — Definitieve Planning v2</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green:#2d5a3d; --green-pale:#e8f0eb;
+    --amber:#b8780a; --amber-pale:#fdf3e0;
+    --blue:#1a4f8a; --blue-pale:#e8f0fa;
+    --red:#8b2e1a; --red-pale:#f9ebe8;
+    --muted:#6b7570; --border:#d8ddd9; --bg:#f6f8f6; --white:#fff; --text:#1c211e;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6}
+  a{color:var(--green);text-decoration:none}
+  a:hover{text-decoration:underline}
+
+  .hdr{background:var(--green);color:white;padding:2rem 1.5rem 1.75rem;position:relative;overflow:hidden}
+  .hdr::after{content:'';position:absolute;right:-30px;top:-30px;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,0.04)}
+  .hdr-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.55);margin-bottom:6px}
+  .hdr h1{font-family:'Playfair Display',serif;font-size:26px;line-height:1.2;margin-bottom:4px}
+  .hdr-sub{font-size:12.5px;color:rgba(255,255,255,0.7);font-weight:300}
+  .hdr-stats{display:flex;gap:1.25rem;margin-top:1.25rem;padding-top:1.25rem;border-top:1px solid rgba(255,255,255,0.15);flex-wrap:wrap}
+  .stat-val{font-size:18px;font-weight:500}
+  .stat-lbl{font-size:10px;color:rgba(255,255,255,0.5);margin-top:1px}
+
+  /* OVERZICHT */
+  .ov{background:var(--white);border-bottom:1px solid var(--border);padding:1rem 1.5rem}
+  .ov-lbl{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+  .ov-row{display:flex;align-items:center;overflow-x:auto;padding-bottom:4px}
+  .ov-stop{flex-shrink:0;text-align:center}
+  .ov-dot{width:9px;height:9px;border-radius:50%;margin:0 auto 4px;border:2px solid white}
+  .od-boot{background:var(--blue);box-shadow:0 0 0 1.5px var(--blue)}
+  .od-transfer{background:var(--muted);box-shadow:0 0 0 1.5px var(--muted)}
+  .od-route{background:var(--green);box-shadow:0 0 0 1.5px var(--green)}
+  .od-optie{background:var(--amber);box-shadow:0 0 0 1.5px var(--amber)}
+  .ov-name{font-size:9px;color:var(--muted);white-space:nowrap}
+  .ov-line{flex:1;min-width:12px;height:1px;margin-bottom:17px}
+  .ol-t{background:var(--muted)}
+  .ol-r{background:var(--green)}
+  .ol-o{background:var(--amber)}
+
+  /* DAY CARDS */
+  .days{padding:.875rem .875rem 1rem;display:flex;flex-direction:column;gap:.75rem}
+  .day{background:var(--white);border-radius:12px;border:1px solid var(--border);overflow:hidden}
+  .day-head{display:flex;align-items:stretch;min-height:60px}
+  .accent{width:5px;flex-shrink:0}
+  .ab{background:var(--blue)} .at{background:var(--muted)} .ar{background:var(--green)} .ao{background:var(--amber)}
+  .day-head-inner{flex:1;padding:.75rem 1rem;display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+  .day-date{font-size:10px;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
+  .day-title{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;line-height:1.25}
+  .day-sub{font-size:11.5px;color:var(--muted);margin-top:2px}
+  .day-km{flex-shrink:0;text-align:right}
+  .km-n{font-size:17px;font-weight:500;line-height:1}
+  .kn-b{color:var(--blue)} .kn-g{color:var(--muted)} .kn-r{color:var(--green)}
+  .km-l{font-size:10px;color:var(--muted)}
+  .km-bar{padding:0 1rem .5rem}
+  .km-bg{height:3px;background:var(--green-pale);border-radius:2px}
+  .km-fill{height:100%;border-radius:2px}
+  .kf-b{background:var(--blue)} .kf-t{background:var(--muted)} .kf-r{background:var(--green)} .kf-o{background:var(--amber)}
+
+  .day-body{padding:.125rem 1rem .875rem}
+  hr.d{border:none;border-top:1px solid var(--border);margin:.5rem 0}
+
+  /* TIJDLIJN */
+  .tl{display:flex;flex-direction:column}
+  .tl-item{display:flex;gap:8px}
+  .tl-l{width:46px;flex-shrink:0}
+  .tl-time{font-size:10.5px;color:var(--muted);text-align:right;padding-top:3px;font-weight:500}
+  .tl-mid{display:flex;flex-direction:column;align-items:center;width:14px;flex-shrink:0}
+  .dot{width:7px;height:7px;border-radius:50%;margin-top:5px;flex-shrink:0}
+  .dg{background:var(--border)} .dr{background:var(--green)} .db{background:var(--blue)} .da{background:var(--amber)}
+  .vline{width:1px;flex:1;min-height:12px;background:var(--border)}
+  .tl-txt{padding-bottom:9px;padding-top:3px;font-size:12.5px;color:var(--text);line-height:1.45;flex:1}
+  .tl-txt b{font-weight:500}
+  .tag{display:inline-block;font-size:10px;padding:1px 7px;border-radius:99px;font-weight:500;margin-left:4px;vertical-align:middle}
+  .tg{background:var(--green-pale);color:var(--green)}
+  .ta{background:var(--amber-pale);color:#7a5200}
+  .tr{background:var(--red-pale);color:var(--red)}
+  .tb{background:var(--blue-pale);color:var(--blue)}
+
+  /* STOP KAARTJE */
+  .stop-card{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:.6rem .875rem;margin:.375rem 0 .375rem 54px;font-size:12px;line-height:1.5}
+  .stop-title{font-weight:500;color:var(--text);margin-bottom:2px}
+  .stop-desc{color:var(--muted)}
+
+  /* CAMPING CARD */
+  .camp{margin-top:.5rem;background:var(--green-pale);border-radius:8px;padding:.625rem 1rem;display:flex;gap:10px}
+  .camp-icon{font-size:16px;flex-shrink:0;margin-top:1px}
+  .camp-name{font-weight:500;font-size:12.5px}
+  .camp-name a{color:var(--green)}
+  .camp-det{font-size:11.5px;color:var(--muted);margin-top:2px;line-height:1.45}
+
+  .tip{margin-top:.5rem;border-left:2.5px solid var(--amber);background:var(--amber-pale);padding:.5rem .75rem;border-radius:0 6px 6px 0;font-size:12px;color:#6b4c00;line-height:1.5}
+
+  /* WAYPOINTS SECTIE */
+  .wp-section{margin:.75rem .875rem 0;background:var(--white);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+  .wp-head{background:var(--blue-pale);padding:.75rem 1rem;border-bottom:1px solid var(--border)}
+  .wp-title{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--blue)}
+  .wp-sub{font-size:12px;color:#2a4a7a;margin-top:2px}
+  .wp-body{padding:.875rem 1rem}
+  .wp-route{margin-bottom:1.25rem}
+  .wp-route:last-child{margin-bottom:0}
+  .wp-route-title{font-size:12px;font-weight:500;color:var(--text);margin-bottom:.5rem;display:flex;align-items:center;gap:8px}
+  .wp-badge{font-size:10px;padding:2px 8px;border-radius:99px;font-weight:500}
+  .wp-b-heen{background:var(--muted);color:white}
+  .wp-b-a{background:var(--green-pale);color:var(--green)}
+  .wp-b-b{background:var(--blue-pale);color:var(--blue)}
+  .wp-list{display:flex;flex-direction:column;gap:0}
+  .wp-item{display:flex;gap:8px;font-size:12px}
+  .wp-num{width:18px;height:18px;border-radius:50%;background:var(--green);color:white;font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+  .wp-num.blauw{background:var(--blue)}
+  .wp-num.grijs{background:var(--muted)}
+  .wp-item-inner{flex:1;padding-bottom:8px;border-left:1px dashed var(--border);padding-left:10px;margin-left:9px}
+  .wp-place{font-weight:500;color:var(--text)}
+  .wp-detail{font-size:11px;color:var(--muted)}
+
+  /* KEUZE BLOK */
+  .keuze-blok{margin:.75rem .875rem 0;background:var(--white);border:1.5px solid var(--amber);border-radius:12px;overflow:hidden}
+  .keuze-hdr{background:var(--amber-pale);padding:.75rem 1rem}
+  .keuze-titel{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:#6b4c00}
+  .keuze-sub{font-size:12px;color:#8a6200;margin-top:2px}
+  .keuze-body{padding:.875rem 1rem}
+  .keuze-optie{margin-bottom:1rem}
+  .keuze-optie:last-child{margin-bottom:0}
+  .keuze-optie-hdr{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+  .opt-badge{font-size:10px;font-weight:600;padding:2px 9px;border-radius:99px}
+  .ob-a{background:var(--green-pale);color:var(--green)}
+  .ob-b{background:var(--blue-pale);color:var(--blue)}
+  .keuze-optie-titel{font-size:13px;font-weight:500}
+  .keuze-optie-body{font-size:12px;color:var(--muted);line-height:1.6}
+  .keuze-optie-body b{color:var(--text);font-weight:500}
+  .keuze-div{border:none;border-top:1px solid var(--border);margin:.875rem 0}
+
+  /* FOOTER */
+  .footer{background:var(--white);border-top:1px solid var(--border);padding:1.25rem 1.5rem;margin-top:.75rem}
+  .footer-lbl{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:.875rem}
+  .footer-row{display:flex;gap:10px;font-size:12.5px;margin-bottom:6px}
+  .fi{flex-shrink:0;font-size:15px}
+  .footer-row b{font-weight:500}
+  .legend{display:flex;flex-wrap:wrap;gap:.625rem;margin-top:1rem}
+  .leg-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted)}
+  .leg-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-label">Motorroute · Wales · Juli 2025</div>
+  <h1>Spine of the Dragon</h1>
+  <div class="hdr-sub">Rotterdam · Wo 23 juli avond → Wo 30 juli ochtend · Zuid naar Noord</div>
+  <div class="hdr-stats">
+    <div class="stat"><div class="stat-val">~290 km</div><div class="stat-lbl">Wales route</div></div>
+    <div class="stat"><div class="stat-val">3 etappes</div><div class="stat-lbl">Chepstow → Snowdonia</div></div>
+    <div class="stat"><div class="stat-val">4 campings</div><div class="stat-lbl">in Wales + optioneel Cotswolds</div></div>
+    <div class="stat"><div class="stat-val">2 opties</div><div class="stat-lbl">voor de terugweg</div></div>
+  </div>
+</div>
+
+<!-- OVERZICHT BALK -->
+<div class="ov">
+  <div class="ov-lbl">Route overzicht</div>
+  <div class="ov-row">
+    <div class="ov-stop"><div class="ov-dot od-boot"></div><div class="ov-name">Hoek v.H.</div></div>
+    <div class="ov-line ol-t"></div>
+    <div class="ov-stop"><div class="ov-dot od-boot"></div><div class="ov-name">Harwich</div></div>
+    <div class="ov-line ol-t"></div>
+    <div class="ov-stop"><div class="ov-dot od-transfer"></div><div class="ov-name">Lavenham</div></div>
+    <div class="ov-line ol-t"></div>
+    <div class="ov-stop"><div class="ov-dot od-transfer"></div><div class="ov-name">Chepstow</div></div>
+    <div class="ov-line ol-r"></div>
+    <div class="ov-stop"><div class="ov-dot od-route"></div><div class="ov-name">Rhayader</div></div>
+    <div class="ov-line ol-r"></div>
+    <div class="ov-stop"><div class="ov-dot od-route"></div><div class="ov-name">Machynlleth</div></div>
+    <div class="ov-line ol-r"></div>
+    <div class="ov-stop"><div class="ov-dot od-route"></div><div class="ov-name">Beddgelert</div></div>
+    <div class="ov-line ol-t"></div>
+    <div class="ov-stop"><div class="ov-dot od-transfer"></div><div class="ov-name">Llangollen</div></div>
+    <div class="ov-line ol-o"></div>
+    <div class="ov-stop"><div class="ov-dot od-optie"></div><div class="ov-name">Cotswolds?</div></div>
+    <div class="ov-line ol-t"></div>
+    <div class="ov-stop"><div class="ov-dot od-boot"></div><div class="ov-name">Harwich</div></div>
+  </div>
+</div>
+
+<div class="days">
+
+<!-- DAG 1 -->
+<div class="day">
+  <div class="day-head">
+    <div class="accent ab"></div>
+    <div class="day-head-inner">
+      <div><div class="day-date">Woensdag 23 juli</div><div class="day-title">Rotterdam → nachtboot</div><div class="day-sub">Hoek van Holland → Harwich</div></div>
+      <div class="day-km"><div class="km-n kn-b">~65</div><div class="km-l">km</div></div>
+    </div>
+  </div>
+  <div class="km-bar"><div class="km-bg"><div class="km-fill kf-b" style="width:17%"></div></div></div>
+  <div class="day-body">
+    <div class="tl">
+      <div class="tl-item"><div class="tl-l"><div class="tl-time">10:00</div></div><div class="tl-mid"><div class="dot dg"></div><div class="vline"></div></div><div class="tl-txt">Rustig vertrek Rotterdam. Motor checken, koffers inpakken, vol tanken.</div></div>
+      <div class="tl-item"><div class="tl-l"><div class="tl-time">11:30</div></div><div class="tl-mid"><div class="dot dg"></div><div class="vline"></div></div><div class="tl-txt">Aankomst <b>Hoek van Holland</b>. Lunch aan de haven.</div></div>
+      <div class="tl-item"><div class="tl-l"><div class="tl-time">18:00</div></div><div class="tl-mid"><div class="dot dg"></div><div class="vline"></div></div><div class="tl-txt">Inchecken Stena Line terminal. Motorrijders als eerste aan boord — vroeg melden.</div></div>
+      <div class="tl-item"><div class="tl-l"><div class="tl-time">22:00</div></div><div class="tl-mid"><div class="dot db"></div></div><div class="tl-txt">Afvaart <b>Hoek van Holland → Harwich</b>. Aankomst 08:00. <span class="tag tb">hut boeken!</span></div></div>
+    </div>
+    <div class="tip">⚓ Hut boeken bij <a href="https://www.stenaline.nl" target="_blank">stenaline.nl</a> — in de zomer snel vol. Exacte vertrektijden ook daar controleren.</div>
+  </div>
+</div>
+
+<!-- DAG 2 -->
+<div class="day">
+  <div class="day-head">
+    <div class="accent at"></div>
+    <div class="day-head-inner">
+      <div><div class="day-date">Donderdag 24 juli · Transferdag</div><div class="day-title">Harwich → Chepstow</div><div class="day-sub">Via Suffolk B-wegen, Dedham Vale &amp; Wye Valley · scenic</div></div>
+      <div class="day-km"><div class="km-n kn-g">~310</div><div class="km-l">km</div></div>
+    </div>
+  </div>
+  <div class="km-bar"><div class="km-bg"><div class="km-fill kf-t" style="width:80%"></div></div></div>
+  <div class="day-body">
+    <div class="tl">
+      <div class="tl-item"><div class="tl-l"><div class="tl-time">08:00</div></div><div class="tl-mid"><div class="dot dg"></div><div class="vline"></div></div><div class="tl-txt">Aankomst Harwich. Van boord, ontbijt, vol tanken.</div></div>
+      <div class="tl-item"><div class="tl-l"><div class="tl-time">09:00</div></div><div class="tl-mid"><div class="dot dr"></div><div class="vline"></div></div><div class="tl-txt">Vertrek via <b>B1352 → Manningtree → Dedham</b>. Rustige B-wegen door het Engelse platteland, geen snelweg.</div></div>
+    </div>
+    <div class="stop-card">
+      <div class="stop-title">🌿 Dedham Vale — 'Constable Country'</div>
+      <div class="stop-desc">Beschermd landschap langs de rivier de Stour, beroemd door de schilderijen van John Constable. Rustige B-wegen, kleine dorpjes, Engels platteland op zijn mooist. Koffie in Dedham village.</div>
+    </div>
+    <div class="tl" style="margin-top:.5rem">
+      <div class="tl-item"><div class="tl-l"><div class="tl-time">10:30</div></div><div class="tl-mid"><div class="dot dr"></div><div class="vline"></div></div><div class="tl-txt">Via Sudbury → <b>Lavenham</b>. Even parkeren en rondlopen. 30-45 minuten is genoeg.</div></div>
+    </div>
+    <div class="stop-card">
+      <div class="stop-title">🏘 Lavenham — middeleeuwse wolstad</div>
+      <div class="stop-desc">Een van de best bewaarde middeleeuwse dorpjes van Engeland. Scheefgezakte vakwerkhuizen uit de 14e-15e eeuw, statige marktplaats en imposante kerk. Rijkdom uit de wolhandel, bevroren in de tijd. Ideaal voor een koffie en een korte wandeling.</div>
+    </div>
+    <div class="tl" style="margin-top:.5rem">
+      <div class="tl-item"><div class="tl-l"><div class="tl-time">12:00</div></div><div class="tl-mid"><div class="dot dg"></div><div class="vline"></div></div><div class="tl-txt">Via A-wegen door de Midlands richting Wales. A14 → A1 kort → A5 → A49.</div></div>
+      <div class="tl-item"><div class="tl-l"><div class="tl-time">14:30</div></div><div class="tl-mid"><div class="dot dr"></div><div class="vline"></div></div><div class="tl-txt"><b>Ross-on-Wye → A466 Wye Valley</b> → langs de rivier richting Chepstow. Tintern Abbey stoppen verplicht.</div></div>
+    </div>
+    <div class="stop-card">
+      <div class="stop-title">🏰 Tintern Abbey (A466, Wye Valley)</div>
+      <div class="stop-desc">Indrukwekkende ruïne van een 12e-eeuwse cisterciënzer abdij in de beboste Wye-vallei. De A466 langs de rivier is een van de mooiste wegen van Engeland — slingerende asfaltweg, hoge bossen, rivier aan je zij. Parkeren bij de abdij en even uitstappen.</div>
+    </div>
+    <div class="tl" style="margin-top:.5rem">
+      <div class="tl-item"><div class="tl-l"><div class="tl-time">16:00</div></div><div class="tl-mid"><div class="dot dr"></div></div><div class="tl-txt">Aankomst <b>Chepstow</b> — startpunt van de Spine of the Dragon. Inchecken camping.</div></div>
+    </div>
+    <div class="camp">
+      <div class="camp-icon">🏕</div>
+      <div>
+        <div class="camp-name"><a href="https://www.pyscodlyncaravanpark.com" target="_blank">Pyscodlyn Farm Campsite</a> — bij Abergavenny (15 min van Chepstow)</div>
+        <div class="camp-det">Rustig familiebedrijf aan de voet van de Sugar Loaf mountain · Usk Valley · Brecon Beacons NP · goed sanitair · ±£18-22/nacht</div>
+      </div>
+    </div>
+    <div class="tip">🍺 Abergavenny = 'de voedselhoofdstad van Wales'. The Hen &amp; Chickens of Angel Hotel voor een goede eerste Welse maaltijd.</div>
+  </div>
+</div>
+
+<!-- DAG 3 -->
+<div class="day">
+  <div class="day-head">
+    <div class="accent ar"></div>
+    <div class="day-head-inner">
+      <div><div class="day-date">Vrijdag 25 juli · Etappe 1</div><div class="day-title">Gospel Pass &amp; Devil's Staircase</div><div class="day-sub">Chepstow → Rhayader · ~95 km</div></div>
+      <div class="day-km"><div class="km-n kn-r">~95</div><div class="km-l">km</div></div>
+    </div>
+  </div>
+  <div class="km-bar"><div class="km-bg"><div class="km-fill kf-r" style="width:24%"></div></div></div>
+  <div class="day-body">
+    <div class="tl">
+      <div class="tl-item"><div class="tl-l"><div class="tl-time">09:00</div></div><div class="tl-mid"><div class="dot dg"></div><div class="vline"></div></div><div class="tl-txt">Ontbijt op camping. Warme kleding aan — bergpassen zijn fris.</div></div>
+      <div class="tl-item"><div class="tl-l"><div class="tl-time">10:00</div></div><div class="tl-mid"><div class="dot dr"></div><div class="vline"></div></div><div class="tl-txt"><b>Gospel Pass</b> (Bwlch yr Efengyl) <span class="tag tg">549m · hoogste asfaltweg Wales</span></div></div>
+    </div>
+    <div class="stop-card">
+      <div class="stop-title">⛰ Gospel Pass — Black Mountains</div>
+      <div class="stop-desc">De hoogste geasfalteerde bergweg van Wales slingert over de Black Mountains. Panoramisch uitzicht over drie nationale parken. Weinig verkeer, schitterend uitzicht. Stoppen aan de top voor de foto's.</div>
+    </div>
+    <div class="tl" style="margin-top:.5rem">
+      <div class="tl-item"><div class="tl-l"><div class="tl-time">11:30</div></div><div class="tl-mid"><div class="dot dg"></div><div class="vline"></div></div><div class="tl-txt"><b>Hay-on-Wye</b> — wereldberoemde boekenstad. Koffie en even rondlopen. 20 min is genoeg.</div></div>
+      <div class="tl-item"><div class="tl-l"><div class="tl-time">12:30</div></div><div class="tl-mid"><div class="dot dr"></div><div class="vline"></div></div><div class="tl-txt"><b>Devil's Staircase</b> bij Abergwesyn <span class="tag tr">⚠ scherpe hairpins</span></div></div>
+    </div>
+    <div class="stop-card">
+      <div class="stop-title">🌀 Devil's Staircase — Abergwesyn</div>
+      <div class="stop-desc">Een van de meest dramatische bergweggetjes van Wales. Brute hairpins die de berg opkruipen door eenzaam heidelandschap. Bijna geen verkeer. Stoppen voor een foto halverwege is een must.</div>
+    </div>
+    <div class="tl" style="margin-top:.5rem">
+      <div class="tl-item"><div class="tl-l"><div class="tl-time">13:30</div></div><div class="tl-mid"><div class="dot dg"></div><div class="vline"></div></div><div class="tl-txt">Lunch in <b>Rhayader</b>. <span class="tag ta">⛽ tankstop</span></div></div>
+      <div class="tl-item"><div class="tl-l"><div class="tl-time">14:30</div></div><div class="tl-mid"><div class="dot dr"></div><div class="vline"></div></div><div class="tl-txt"><b>Elan Valley</b> — Victoriaanse stuwmeren. Stop bij Craig Goch dam. Café bij bezoekerscentrum.</div></div>
+    </div>
+    <div class="stop-card">
+      <div class="stop-title">💧 Elan Valley Reservoirs</div>
+      <div class="stop-desc">Serie victoriaanse stuwmeren in een stille bergvallei, aangelegd eind 19e eeuw voor de watervoorziening van Birmingham. Indrukwekkende dammen, spiegelglad water, weinig toeristen. Rijd langs alle dammen — het bezoekerscentrum heeft een kleine tentoonstelling en een goed café.</div>
+    </div>
+    <div class="tl" style="margin-top:.5rem">
+      <div class="tl-item"><div class="tl-l"><div class="tl-time">16:00</div></div><div class="tl-mid"><div class="dot dr"></div></div><div class="tl-txt">Inchecken <b>Elan Oaks Camping</b>. Tent op, avond aan de rivier.</div></div>
+    </div>
+    <div class="camp">
+      <div class="camp-icon">🏕</div>
+      <div>
+        <div class="camp-name"><a href="https://www.elanoaks.co.uk" target="_blank">Elan Oaks Camping</a> — Rhayader</div>
+        <div class="camp-det">Aan de rivier de Elan · 2,5 km van Rhayader · modern sanitair · kleine winkel · rode wouwen, otters, dassen · ±£20-30/nacht (2 personen)</div>
+      </div>
+    </div>
+    <div class="tip">🦅 Rhayader staat bekend als 'rode wouwenhoofdstad van Wales'. Bij het bezoekerscentrum Elan Valley (5 min) worden ze dagelijks gevoerd rond 15:00.</div>
+  </div>
+</div>
+
+<!-- DAG 4 -->
+<div class="day">
+  <div class="day-head">
+    <div class="accent ar"></div>
+    <div class="day-head-inner">
+      <div><div class="day-date">Zaterdag 26 juli · Etappe 2</div><div class="day-title">Cambrian Mountains &amp; Mach Loop</div><div class="day-sub">Rhayader → Machynlleth · ~85 km</div></div>
+      <div class="day-km"><div class="km-n kn-r">~85</div><div class="km-l">km</div></div>
+    </div>
+  </div>
+  <div class="km-bar"><div class="km-bg"><div class="km-fill kf-r" style="width:22%"></div></div></div>
+  <div class="day-body">
+    <div class="tl">
+      <div class="tl-item"><div class="tl-l"><div class="tl-time">09:30</div></div><div class="tl-mid"><div class="dot dg"></div><div class="vline"></div></div><div class="tl-txt">Ontbijt op camping.</div></div>
+      <div class="tl-item"><div class="tl-l"><div class="tl-time">10:00</div></div><div class="tl-mid"><div class="dot dr"></div><div class="vline"></div></div><div class="tl-txt"><b>Cambrian Mountains</b> — de ruggengraat van Wales.</div></div>
+    </div>
+    <div class="stop-card">
+      <div class="stop-title">🏔 Cambrian Mountains</div>
+      <div class="stop-desc">Het grote, stille hart van Wales. Eindeloze heuvels, nauwelijks verkeer, geen toeristen. De ABR Spine route rijdt hier langs een van de mooiste groene lanen van het land — smalle wegen door open berglandschap met wijds uitzicht.</div>
+    </div>
+    <div class="tl" style="margin-top:.5rem">
+      <div class="tl-item"><div class="tl-l"><div class="tl-time">12:00</div></div><div class="tl-mid"><div class="dot dg"></div><div class="vline"></div></div><div class="tl-txt">Lunch in <b>Machynlleth</b> — historische marktstad. Owain Glyndŵr Centre is de moeite. <span class="tag ta">⛽ tankstop</span></div></div>
+      <div class="tl-item"><div class="tl-l"><div class="tl-time">14:00</div></div><div class="tl-mid"><div class="dot dr"></div><div class="vline"></div></div><div class="tl-txt"><b>Mach Loop</b> — RAF laagvliegroute. <span class="tag tg">✈ spektakel</span></div></div>
+    </div>
+    <div class="stop-card">
+      <div class="stop-title">✈ Mach Loop — Bwlch Oerddrws viewpoint</div>
+      <div class="stop-desc">De beroemde laagvliegroute van de RAF door de Mach-vallei. Vanuit het viewpoint bij Bwlch Oerddrws vliegen straaljagers (Typhoon, F-35, Hawk) op soms 30 meter hoogte door het dal. Even wachten loont. De piek van activiteit is doordeweeks, maar ook in weekenden zijn er vluchten.</div>
+    </div>
+    <div class="tl" style="margin-top:.5rem">
+      <div class="tl-item"><div class="tl-l"><div class="tl-time">15:30</div></div><div class="tl-mid"><div class="dot dr"></div></div><div class="tl-txt">Inchecken <b>Gwerniago Campsite</b>. Uitzicht over de Dyfi-vallei. Kampvuur aansteken.</div></div>
+    </div>
+    <div class="camp">
+      <div class="camp-icon">🏕</div>
+      <div>
+        <div class="camp-name"><a href="https://www.pitchup.com/campsites/Wales/Mid-Wales/Powys/Machynlleth/gwerniago-campsite/" target="_blank">Gwerniago Campsite</a> — bij Machynlleth</div>
+        <div class="camp-det">Werkend boerenbedrijf · rand van Snowdonia NP · Dyfi-vallei · kampvuren toegestaan (hout kopen op site) · pub op 10 min · ±£24/nacht · gwerniago.co.uk</div>
+      </div>
+    </div>
+    <div class="tip">🐦 Vanuit de camping zie je met een goede verrekijker het nest van de Dyfi-osprey's. En 's avonds The Red Lion in Machynlleth voor lokaal bier.</div>
+  </div>
+</div>
+
+<!-- DAG 5 -->
+<div class="day">
+  <div class="day-head">
+    <div class="accent ar"></div>
+    <div class="day-head-inner">
+      <div><div class="day-date">Zondag 27 juli · Etappe 3</div><div class="day-title">Snowdonia — de finale 🏔</div><div class="day-sub">Machynlleth → Beddgelert · ~100 km</div></div>
+      <div class="day-km"><div class="km-n kn-r">~100</div><div class="km-l">km</div></div>
+    </div>
+  </div>
+  <div class="km-bar"><div class="km-bg"><div class="km-fill kf-r" style="width:26%"></div></div></div>
+  <div class="day-body">
+    <div class="tl">
+      <div class="tl-item"><div class="tl-l"><div class="tl-time">09:30</div></div><div class="tl-mid"><div class="dot dg"></div><div class="vline"></div></div><div class="tl-txt">Ontbijt op camping. Laatste etappe — echt genieten.</div></div>
+      <div class="tl-item"><div class="tl-l"><div class="tl-time">10:30</div></div><div class="tl-mid"><div class="dot dg"></div><div class="vline"></div></div><div class="tl-txt"><b>Dolgellau</b> — charmante marktstad aan de voet van Cadair Idris. Even door het centrum.</div></div>
+      <div class="tl-item"><div class="tl-l"><div class="tl-time">11:30</div></div><div class="tl-mid"><div class="dot dr"></div><div class="vline"></div></div><div class="tl-txt"><b>Llanberis Pass</b> (Pen-y-Pass) <span class="tag tg">spectaculair</span></div></div>
+    </div>
+    <div class="stop-card">
+      <div class="stop-title">🪨 Llanberis Pass — Pen-y-Pass</div>
+      <div class="stop-desc">Een van de meest dramatische bergpassen van Groot-Brittannië. Verticale rotswanden rijzen aan beide kanten op uit het smalle dal. Het is de klassieke route naar de top van Snowdon (Yr Wyddfa). Stoppen bij de parkeerplaats bovenaan voor het uitzicht.</div>
+    </div>
+    <div class="tl" style="margin-top:.5rem">
+      <div class="tl-item"><div class="tl-l"><div class="tl-time">13:00</div></div><div class="tl-mid"><div class="dot dg"></div><div class="vline"></div></div><div class="tl-txt">Lunch in <b>Llanberis</b> — aan het meer, zicht op Snowdon. <span class="tag ta">⛽ tankstop</span></div></div>
+      <div class="tl-item"><div class="tl-l"><div class="tl-time">14:30</div></div><div class="tl-mid"><div class="dot dr"></div><div class="vline"></div></div><div class="tl-txt">Via A4085 naar <b>Beddgelert</b> — schilderachtig bergdorp waar drie rivierdalen samenkomen. Einde van de Spine! 🎉</div></div>
+      <div class="tl-item"><div class="tl-l"><div class="tl-time">15:30</div></div><div class="tl-mid"><div class="dot dr"></div></div><div class="tl-txt">Inchecken <b>Cae Du Campsite</b>. Tent op aan de Glaslyn rivier.</div></div>
+    </div>
+    <div class="camp">
+      <div class="camp-icon">🏕</div>
+      <div>
+        <div class="camp-name"><a href="https://www.pitchup.com/en-us/campsites/Wales/North-Wales/Gwynedd/Beddgelert/cae-du-campsite_/" target="_blank">Cae Du Campsite</a> — Beddgelert</div>
+        <div class="camp-det">30 hectare langs de rivier Glaslyn · 10 min lopen naar Beddgelert dorp · pubs en restaurants · Snowdon 5 min rijden · ±£29+/nacht · vroeg boeken!</div>
+      </div>
+    </div>
+    <div class="tip">🍺 Eindfeest! The Tanronnen Inn en Saracen's Head in Beddgelert zijn de klassieke bergpubs. Verdiend na 290 km Spine of the Dragon.</div>
+  </div>
+</div>
+
+</div><!-- /days -->
+
+<!-- KEUZEBLOK TERUGWEG -->
+<div class="keuze-blok">
+  <div class="keuze-hdr">
+    <div class="keuze-titel">Terugweg: dag 6 &amp; 7 — kies ter plekke</div>
+    <div class="keuze-sub">Ma 28 + Di 29 juli · Beddgelert → Harwich → nachtboot terug</div>
+  </div>
+  <div class="keuze-body">
+    <div class="keuze-optie">
+      <div class="keuze-optie-hdr"><span class="opt-badge ob-a">Optie A</span><span class="keuze-optie-titel">Direct — rustig, twee dagen buffer</span></div>
+      <div class="keuze-optie-body">
+        <b>Ma 28:</b> Beddgelert → A55 Noord-Wales → Llangollen → <b>Horseshoe Pass</b> (A542) → Shrewsbury → A49 → A5 → M6 kort → A14 → Harwich. Overnacht bij Harwich. (~370 km)<br><br>
+        <b>Di 29:</b> Relaxte dag bij Harwich — oude haven, lunch, vroeg inchecken. Avond nachtboot (~22:00).<br><br>
+        <b>✓</b> Geen tijdsdruk, ruim op tijd bij de boot.
+      </div>
+    </div>
+    <div class="keuze-div"></div>
+    <div class="keuze-optie">
+      <div class="keuze-optie-hdr"><span class="opt-badge ob-b">Optie B</span><span class="keuze-optie-titel">Via Cotswolds — extra avontuur</span></div>
+      <div class="keuze-optie-body">
+        <b>Ma 28:</b> Beddgelert → Horseshoe Pass → Shrewsbury → <b>Cotswolds</b> (Stow-on-the-Wold, Bourton-on-the-Water, Burford). Overnacht bij Burford. (~320 km)<br>
+        → <a href="https://www.pitchup.com/en-us/tents/England/Central/Oxfordshire/Burford/" target="_blank">Far Peak Camping of Burford Caravan Club</a> — direct bij de Cotswold-dorpjes.<br><br>
+        <b>Di 29:</b> Rustig door de Cotswolds → <b>A44 → A43 → A14 → Harwich</b>. Avond nachtboot. (~280 km, géén Oxford of Cambridge!)<br><br>
+        <b>✓</b> Bonus: honing-kleurige dorpjes, sweeping roads door de Cotswolds.<br>
+        <b>✗</b> Dag 6 is wat langer.
+      </div>
+    </div>
+    <div class="keuze-div"></div>
+    <div style="font-size:12px;color:var(--muted)">
+      <b style="color:var(--text)">Horseshoe Pass</b> zit in beide opties. De A542 bij Llangollen is een iconische motorweg — sweeping bochten, uitzicht over de Dee Valley, en een gezellige bikerscultuur bij het café aan de top.
+    </div>
+  </div>
+</div>
+
+<!-- WAYPOINTS SECTIE -->
+<div class="wp-section">
+  <div class="wp-head">
+    <div class="wp-title">Basecamp waypoints</div>
+    <div class="wp-sub">Voer deze punten in als via-punten in Garmin Basecamp · snelwegen vermijden instellen</div>
+  </div>
+  <div class="wp-body">
+
+    <div class="wp-route">
+      <div class="wp-route-title"><span class="wp-badge wp-b-heen">Heenweg</span> Do 24 juli — Harwich → Chepstow</div>
+      <div class="wp-list">
+        <div class="tl-item" style="gap:8px;font-size:12px;margin-bottom:6px">
+          <div style="width:20px;height:20px;border-radius:50%;background:var(--muted);color:white;font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">1</div>
+          <div style="flex:1;border-left:1px dashed var(--border);padding-left:10px;margin-left:9px;padding-bottom:6px"><div style="font-weight:500">Harwich International Port</div><div style="font-size:11px;color:var(--muted)">Startpunt — ferry terminal</div></div>
+        </div>
+        <div class="tl-item" style="gap:8px;font-size:12px;margin-bottom:6px">
+          <div style="width:20px;height:20px;border-radius:50%;background:var(--muted);color:white;font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">2</div>
+          <div style="flex:1;border-left:1px dashed var(--border);padding-left:10px;margin-left:9px;padding-bottom:6px"><div style="font-weight:500">Dedham, Essex</div><div style="font-size:11px;color:var(--muted)">Via B1352/B1029 · Constable Country</div></div>
+        </div>
+        <div class="tl-item" style="gap:8px;font-size:12px;margin-bottom:6px">
+          <div style="width:20px;height:20px;border-radius:50%;background:var(--muted);color:white;font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">3</div>
+          <div style="flex:1;border-left:1px dashed var(--border);padding-left:10px;margin-left:9px;padding-bottom:6px"><div style="font-weight:500">Lavenham, Suffolk</div><div style="font-size:11px;color:var(--muted)">Koffie stop · middeleeuwse wolstad</div></div>
+        </div>
+        <div class="tl-item" style="gap:8px;font-size:12px;margin-bottom:6px">
+          <div style="width:20px;height:20px;border-radius:50%;background:var(--muted);color:white;font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">4</div>
+          <div style="flex:1;border-left:1px dashed var(--border);padding-left:10px;margin-left:9px;padding-bottom:6px"><div style="font-weight:500">Ross-on-Wye, Herefordshire</div><div style="font-size:11px;color:var(--muted)">Lunch · overstap naar A466 Wye Valley</div></div>
+        </div>
+        <div class="tl-item" style="gap:8px;font-size:12px;margin-bottom:6px">
+          <div style="width:20px;height:20px;border-radius:50%;background:var(--muted);color:white;font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">5</div>
+          <div style="flex:1;border-left:1px dashed var(--border);padding-left:10px;margin-left:9px;padding-bottom:6px"><div style="font-weight:500">Tintern Abbey, Monmouthshire</div><div style="font-size:11px;color:var(--muted)">A466 · stop bij de abdijruïne</div></div>
+        </div>
+        <div class="tl-item" style="gap:8px;font-size:12px">
+          <div style="width:20px;height:20px;border-radius:50%;background:var(--muted);color:white;font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">6</div>
+          <div style="flex:1;padding-left:10px;margin-left:9px"><div style="font-weight:500">Chepstow, Wales</div><div style="font-size:11px;color:var(--muted)">Eindpunt · startpunt SotD · camping bij Abergavenny</div></div>
+        </div>
+      </div>
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:1rem 0">
+
+    <div class="wp-route">
+      <div class="wp-route-title"><span class="wp-badge wp-b-a">Terugweg A</span> Ma 28 — Beddgelert → Harwich (direct)</div>
+      <div class="wp-list">
+        <div class="tl-item" style="gap:8px;font-size:12px;margin-bottom:6px">
+          <div style="width:20px;height:20px;border-radius:50%;background:var(--green);color:white;font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">1</div>
+          <div style="flex:1;border-left:1px dashed var(--border);padding-left:10px;margin-left:9px;padding-bottom:6px"><div style="font-weight:500">Beddgelert, Gwynedd</div><div style="font-size:11px;color:var(--muted)">Startpunt</div></div>
+        </div>
+        <div class="tl-item" style="gap:8px;font-size:12px;margin-bottom:6px">
+          <div style="width:20px;height:20px;border-radius:50%;background:var(--green);color:white;font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">2</div>
+          <div style="flex:1;border-left:1px dashed var(--border);padding-left:10px;margin-left:9px;padding-bottom:6px"><div style="font-weight:500">Llangollen, Denbighshire</div><div style="font-size:11px;color:var(--muted)">A542 Horseshoe Pass · iconische motorweg</div></div>
+        </div>
+        <div class="tl-item" style="gap:8px;font-size:12px;margin-bottom:6px">
+          <div style="width:20px;height:20px;border-radius:50%;background:var(--green);color:white;font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">3</div>
+          <div style="flex:1;border-left:1px dashed var(--border);padding-left:10px;margin-left:9px;padding-bottom:6px"><div style="font-weight:500">Shrewsbury, Shropshire</div><div style="font-size:11px;color:var(--muted)">Lunch · overstap richting oost-Engeland</div></div>
+        </div>
+        <div class="tl-item" style="gap:8px;font-size:12px">
+          <div style="width:20px;height:20px;border-radius:50%;background:var(--green);color:white;font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">4</div>
+          <div style="flex:1;padding-left:10px;margin-left:9px"><div style="font-weight:500">Harwich International Port</div><div style="font-size:11px;color:var(--muted)">Via A5 → M6 → A14 · eindpunt</div></div>
+        </div>
+      </div>
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:1rem 0">
+
+    <div class="wp-route">
+      <div class="wp-route-title"><span class="wp-badge wp-b-b">Terugweg B</span> Ma 28 + Di 29 — via Cotswolds</div>
+      <div class="wp-list">
+        <div class="tl-item" style="gap:8px;font-size:12px;margin-bottom:6px">
+          <div style="width:20px;height:20px;border-radius:50%;background:var(--blue);color:white;font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">1</div>
+          <div style="flex:1;border-left:1px dashed var(--border);padding-left:10px;margin-left:9px;padding-bottom:6px"><div style="font-weight:500">Beddgelert, Gwynedd</div><div style="font-size:11px;color:var(--muted)">Startpunt</div></div>
+        </div>
+        <div class="tl-item" style="gap:8px;font-size:12px;margin-bottom:6px">
+          <div style="width:20px;height:20px;border-radius:50%;background:var(--blue);color:white;font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">2</div>
+          <div style="flex:1;border-left:1px dashed var(--border);padding-left:10px;margin-left:9px;padding-bottom:6px"><div style="font-weight:500">Llangollen, Denbighshire</div><div style="font-size:11px;color:var(--muted)">A542 Horseshoe Pass</div></div>
+        </div>
+        <div class="tl-item" style="gap:8px;font-size:12px;margin-bottom:6px">
+          <div style="width:20px;height:20px;border-radius:50%;background:var(--blue);color:white;font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">3</div>
+          <div style="flex:1;border-left:1px dashed var(--border);padding-left:10px;margin-left:9px;padding-bottom:6px"><div style="font-weight:500">Shrewsbury, Shropshire</div><div style="font-size:11px;color:var(--muted)">Lunch</div></div>
+        </div>
+        <div class="tl-item" style="gap:8px;font-size:12px;margin-bottom:6px">
+          <div style="width:20px;height:20px;border-radius:50%;background:var(--blue);color:white;font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">4</div>
+          <div style="flex:1;border-left:1px dashed var(--border);padding-left:10px;margin-left:9px;padding-bottom:6px"><div style="font-weight:500">Stow-on-the-Wold, Gloucestershire</div><div style="font-size:11px;color:var(--muted)">Cotswolds hart · honing-kleurige dorpjes</div></div>
+        </div>
+        <div class="tl-item" style="gap:8px;font-size:12px;margin-bottom:6px">
+          <div style="width:20px;height:20px;border-radius:50%;background:var(--blue);color:white;font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">5</div>
+          <div style="flex:1;border-left:1px dashed var(--border);padding-left:10px;margin-left:9px;padding-bottom:6px"><div style="font-weight:500">Burford, Oxfordshire</div><div style="font-size:11px;color:var(--muted)">Overnacht camping · Far Peak of Burford Caravan Club</div></div>
+        </div>
+        <div class="tl-item" style="gap:8px;font-size:12px;margin-bottom:6px">
+          <div style="width:20px;height:20px;border-radius:50%;background:var(--blue);color:white;font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">6</div>
+          <div style="flex:1;border-left:1px dashed var(--border);padding-left:10px;margin-left:9px;padding-bottom:6px"><div style="font-weight:500">Chipping Norton, Oxfordshire</div><div style="font-size:11px;color:var(--muted)">Di 29 · richting A43</div></div>
+        </div>
+        <div class="tl-item" style="gap:8px;font-size:12px">
+          <div style="width:20px;height:20px;border-radius:50%;background:var(--blue);color:white;font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">7</div>
+          <div style="flex:1;padding-left:10px;margin-left:9px"><div style="font-weight:500">Harwich International Port</div><div style="font-size:11px;color:var(--muted)">Via A43 → A14 · géén Oxford of Cambridge!</div></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <div class="footer-lbl">Alle campings — boekingslinks</div>
+  <div class="footer-row"><span class="fi">🛳</span><span><b>Nacht 1 + 8:</b> Stena Line hut — <a href="https://www.stenaline.nl" target="_blank">stenaline.nl</a></span></div>
+  <div class="footer-row"><span class="fi">🏕</span><span><b>Nacht 2:</b> <a href="https://www.pyscodlyncaravanpark.com" target="_blank">Pyscodlyn Farm</a>, Abergavenny — ±£18-22/nacht</span></div>
+  <div class="footer-row"><span class="fi">🏕</span><span><b>Nacht 3:</b> <a href="https://www.elanoaks.co.uk" target="_blank">Elan Oaks Camping</a>, Rhayader — ±£20-30/nacht</span></div>
+  <div class="footer-row"><span class="fi">🏕</span><span><b>Nacht 4:</b> <a href="https://www.pitchup.com/campsites/Wales/Mid-Wales/Powys/Machynlleth/gwerniago-campsite/" target="_blank">Gwerniago Campsite</a>, bij Machynlleth — ±£24/nacht</span></div>
+  <div class="footer-row"><span class="fi">🏕</span><span><b>Nacht 5:</b> <a href="https://www.pitchup.com/en-us/campsites/Wales/North-Wales/Gwynedd/Beddgelert/cae-du-campsite_/" target="_blank">Cae Du Campsite</a>, Beddgelert — ±£29+/nacht · vroeg boeken!</span></div>
+  <div class="footer-row"><span class="fi">🏕</span><span><b>Nacht 6 (optie B):</b> <a href="https://www.pitchup.com/en-us/tents/England/Central/Oxfordshire/Burford/" target="_blank">Far Peak of Burford Caravan Club</a>, Cotswolds</span></div>
+
+  <hr style="border:none;border-top:1px solid var(--border);margin:1rem 0">
+  <div class="footer-lbl">Praktisch</div>
+  <div class="footer-row"><span class="fi">⛽</span><span><b>Tanken in:</b> Chepstow · Rhayader · Machynlleth · Llanberis · Llangollen</span></div>
+  <div class="footer-row"><span class="fi">🌧</span><span><b>Weer:</b> altijd regenpak mee — Wales in juli is mooi maar nat</span></div>
+  <div class="footer-row"><span class="fi">💷</span><span><b>Budget campings:</b> ±£85-120 totaal voor 4 nachten (2 personen met tent)</span></div>
+  <div class="footer-row"><span class="fi">🗺</span><span><b>Basecamp tip:</b> stel 'snelwegen vermijden' in · voeg waypoints in als via-punten · importeer SotD GPX apart</span></div>
+
+  <div class="legend">
+    <div class="leg-item"><div class="leg-dot" style="background:var(--blue)"></div>Boot/ferry</div>
+    <div class="leg-item"><div class="leg-dot" style="background:var(--muted)"></div>Transferdag</div>
+    <div class="leg-item"><div class="leg-dot" style="background:var(--green)"></div>Spine of the Dragon (z→n)</div>
+    <div class="leg-item"><div class="leg-dot" style="background:var(--amber)"></div>Optionele terugweg</div>
+  </div>
+</div>
+
+</body>
+</html>
